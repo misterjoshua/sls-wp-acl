@@ -9,8 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run a multi-line script
-      run: |
-        yarn
-        yarn run lint
-        yarn run test
+    - run: yarn
+    - run: yarn run lint
+    - run: yarn run test
+    - run: serverless package
