@@ -59,34 +59,34 @@ functions:
     handler: handler.resyncApi
     events:
       - http:
-          path: /wp/{apiName}/resync
+          path: /items/{apiName}/resync
           method: any
 
   resyncAllApi:
     handler: handler.resyncAllApi
     events:
       - http:
-          path: /wp/all/resync
+          path: /items/all/resync
           method: any
 
   putItemApi:
     handler: handler.putItemApi
     events:
       - http:
-          path: /wp/{apiName}/{type}/{id}
+          path: /items/{apiName}/{type}/{id}
           method: put
       - http:
-          path: /wp/{apiName}/{type}/{id}/put
+          path: /items/{apiName}/{type}/{id}/put
           method: any
 
   deleteItemApi:
     handler: handler.deleteItemApi
     events:
       - http:
-          path: /wp/{apiName}/{type}/{id}
+          path: /items/{apiName}/{type}/{id}
           method: delete
       - http:
-          path: /wp/{apiName}/{type}/{id}/delete
+          path: /items/{apiName}/{type}/{id}/delete
           method: any
 
   resyncScheduler:
@@ -112,7 +112,21 @@ resources:
   Resources:
     listItemsTaskQueue:
       Type: AWS::SQS::Queue
+      Properties:
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt: [deadTasks, Arn]
+          maxReceiveCount: 5
+
     getItemTaskQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt: [deadTasks, Arn]
+          maxReceiveCount: 5
+
+    deadTasks:
       Type: AWS::SQS::Queue
 
     # Clients subscribe to these.
