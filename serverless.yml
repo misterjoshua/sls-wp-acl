@@ -75,7 +75,7 @@ functions:
 
   listItemsTask:
     handler: handler.listItemsTask
-    reservedConcurrency: 5
+    # reservedConcurrency: 5
     events:
       - sqs:
           arn: { Fn::GetAtt: [listItemsTaskQueue, Arn] }
@@ -83,7 +83,7 @@ functions:
 
   getItemTask:
     handler: handler.getItemTask
-    reservedConcurrency: 5
+    # reservedConcurrency: 5
     events:
       - sqs:
           arn: { Fn::GetAtt: [getItemTaskQueue, Arn] }
