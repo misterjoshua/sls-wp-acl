@@ -1,4 +1,4 @@
-import { sendNotification } from "./sns";
+import { sendNotification } from "../notification";
 
 export const knownItemsTopic = process.env.knownItemsTopic;
 

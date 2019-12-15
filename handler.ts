@@ -1,8 +1,8 @@
 import "source-map-support/register";
 import { APIGatewayProxyHandler, ScheduledHandler } from "aws-lambda";
 import { makeSQSHandler } from "./src/util";
-import { runListItemsTask } from "./src/tasks/listItemsTask";
-import { runGetItemTask } from "./src/tasks/getItemTask";
+import { runListItemsTask } from "./src/tasks/listItems/listItemsTask";
+import { runGetItemTask } from "./src/tasks/getItem/getItemTask";
 import { srcResyncApi } from "./src/lambda/resyncApi";
 import { srcResyncAllApi } from "./src/lambda/resyncAllApi";
 import { srcResyncScheduler } from "./src/lambda/resyncScheduler";

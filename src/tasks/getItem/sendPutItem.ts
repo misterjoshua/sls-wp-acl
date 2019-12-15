@@ -1,5 +1,5 @@
-import { sendNotification } from "./sns";
-import { Item } from "../wordpress/item";
+import { sendNotification } from "../notification";
+import { Item } from "../../wordpress/item";
 
 export const putItemTopic = process.env.putItemTopic;
 

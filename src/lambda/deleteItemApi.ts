@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
-import { sendDeleteItem } from "../notifications/sendDeleteItem";
+import { sendDeleteItem } from "../tasks/deleteItem/sendDeleteItem";
 import { statusMessage } from "./statusMessage";
 
 export const srcDeleteItemApi: APIGatewayProxyHandler = async (

@@ -1,10 +1,10 @@
-import { WorkerTask, sendTask, listItemsTaskQueueUrl } from "./task";
-import { sendGetItemTask } from "./getItemTask";
-import { getApi } from "../wordpress/api";
-import { ApiInformation } from "../config/ApiInformation";
-import { sendKnownItems } from "../notifications/sendKnownItems";
-import { getApiInformation } from "../config/getApiInformation";
-import { listItems } from "../wordpress/item";
+import { WorkerTask, sendTask, listItemsTaskQueueUrl } from "../task";
+import { sendGetItemTask } from "../getItem/getItemTask";
+import { getApi } from "../../wordpress/api";
+import { ApiInformation } from "../../config/ApiInformation";
+import { sendKnownItems } from "./sendKnownItems";
+import { getApiInformation } from "../../config/getApiInformation";
+import { listItems } from "../../wordpress/item";
 
 export interface ListItemsCommand extends WorkerTask {
   task: "ListItems";

@@ -1,4 +1,4 @@
-import { sendListItemsCommand } from "../tasks/listItemsTask";
+import { sendListItemsCommand } from "../tasks/listItems/listItemsTask";
 import { ApiInformation } from "../config/ApiInformation";
 import { listApiInformation } from "../config/listApiInformation";
 
