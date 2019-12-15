@@ -5,7 +5,7 @@ export interface Item {
   slug?: string;
 }
 
-function getRequestTypeByType(api: WPAPI, type: string) {
+function getRequestTypeByType(api: WPAPI, type: string): WPAPI.WPRequest {
   switch (type) {
     case "posts":
       return api.posts();
