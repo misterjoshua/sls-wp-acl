@@ -1,6 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
 import { getApiInformation } from "../config/getApiInformation";
 import { sendListItemsCommandForTypes, wpTypes } from "./handler";
+import { statusMessage } from "./statusMessage";
 
 export const srcResyncApi: APIGatewayProxyHandler = async (
   event
@@ -9,8 +10,5 @@ export const srcResyncApi: APIGatewayProxyHandler = async (
 
   await sendListItemsCommandForTypes(await getApiInformation(apiName), wpTypes);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(`Queued ${apiName} ${wpTypes[0]}s`)
-  };
+  return statusMessage(200, `Queued ${apiName}`);
 };

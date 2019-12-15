@@ -51,6 +51,7 @@ provider:
     getItemTaskQueueUrl: !Ref getItemTaskQueue
     listItemsTaskQueueUrl: !Ref listItemsTaskQueue
     putItemTopic: !Ref putItemTopic
+    deleteItemTopic: !Ref deleteItemTopic
     knownItemsTopic: !Ref knownItemsTopic
 
 functions:
@@ -68,6 +69,26 @@ functions:
           path: /wp/all/resync
           method: any
 
+  putItemApi:
+    handler: handler.putItemApi
+    events:
+      - http:
+          path: /wp/{apiName}/{type}/{id}
+          method: put
+      - http:
+          path: /wp/{apiName}/{type}/{id}/put
+          method: any
+
+  deleteItemApi:
+    handler: handler.deleteItemApi
+    events:
+      - http:
+          path: /wp/{apiName}/{type}/{id}
+          method: delete
+      - http:
+          path: /wp/{apiName}/{type}/{id}/delete
+          method: any
+
   resyncScheduler:
     handler: handler.resyncScheduler
     events:
@@ -75,7 +96,6 @@ functions:
 
   listItemsTask:
     handler: handler.listItemsTask
-    # reservedConcurrency: 5
     events:
       - sqs:
           arn: { Fn::GetAtt: [listItemsTaskQueue, Arn] }
@@ -83,7 +103,6 @@ functions:
 
   getItemTask:
     handler: handler.getItemTask
-    # reservedConcurrency: 5
     events:
       - sqs:
           arn: { Fn::GetAtt: [getItemTaskQueue, Arn] }
