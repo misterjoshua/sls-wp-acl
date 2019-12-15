@@ -55,6 +55,9 @@ provider:
     knownItemsTopic: !Ref knownItemsTopic
 
 functions:
+  ####
+  # Item Synchronization Component
+  ####
   resyncApi:
     handler: handler.resyncApi
     events:

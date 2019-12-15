@@ -1,4 +1,4 @@
-import { AWS } from "../util";
+import { AWS } from "../../util";
 
 type NotificationMessage = object | string;
 export async function sendNotification(

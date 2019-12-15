@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
 import { sendGetItemTask } from "../tasks/getItem/getItemTask";
-import { getApiInformation } from "../config/getApiInformation";
+import { getApiInformation } from "../../config/getApiInformation";
 import { statusMessage } from "./statusMessage";
 
 export const srcPutItemApi: APIGatewayProxyHandler = async (

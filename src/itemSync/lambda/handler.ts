@@ -1,6 +1,6 @@
 import { sendListItemsCommand } from "../tasks/listItems/listItemsTask";
-import { ApiInformation } from "../config/ApiInformation";
-import { listApiInformation } from "../config/listApiInformation";
+import { ApiInformation } from "../../config/ApiInformation";
+import { listApiInformation } from "../../config/listApiInformation";
 
 export const defaultApiName = "fairway";
 export const wpTypes = ["posts", "categories", "pages", "tags", "users"];

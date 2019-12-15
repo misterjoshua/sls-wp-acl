@@ -1,13 +1,13 @@
 import "source-map-support/register";
 import { APIGatewayProxyHandler, ScheduledHandler } from "aws-lambda";
 import { makeSQSHandler } from "./src/util";
-import { runListItemsTask } from "./src/tasks/listItems/listItemsTask";
-import { runGetItemTask } from "./src/tasks/getItem/getItemTask";
-import { srcResyncApi } from "./src/lambda/resyncApi";
-import { srcResyncAllApi } from "./src/lambda/resyncAllApi";
-import { srcResyncScheduler } from "./src/lambda/resyncScheduler";
-import { srcPutItemApi } from "./src/lambda/putItemApi";
-import { srcDeleteItemApi } from "./src/lambda/deleteItemApi";
+import { srcResyncApi } from "./src/itemSync/lambda/resyncApi";
+import { srcResyncAllApi } from "./src/itemSync/lambda/resyncAllApi";
+import { srcResyncScheduler } from "./src/itemSync/lambda/resyncScheduler";
+import { srcPutItemApi } from "./src/itemSync/lambda/putItemApi";
+import { srcDeleteItemApi } from "./src/itemSync/lambda/deleteItemApi";
+import { runListItemsTask } from "./src/itemSync/tasks/listItems/listItemsTask";
+import { runGetItemTask } from "./src/itemSync/tasks/getItem/getItemTask";
 
 export const resyncApi: APIGatewayProxyHandler = srcResyncApi;
 export const resyncAllApi: APIGatewayProxyHandler = srcResyncAllApi;

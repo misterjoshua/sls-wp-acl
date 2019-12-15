@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
-import { getApiInformation } from "../config/getApiInformation";
+import { getApiInformation } from "../../config/getApiInformation";
 import { sendListItemsCommandForTypes, wpTypes } from "./handler";
 import { statusMessage } from "./statusMessage";
 

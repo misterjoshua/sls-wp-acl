@@ -1,5 +1,5 @@
-import { AWS } from "../util";
-import { ApiInformation } from "../config/ApiInformation";
+import { AWS } from "../../util";
+import { ApiInformation } from "../../config/ApiInformation";
 
 export const listItemsTaskQueueUrl = process.env.listItemsTaskQueueUrl;
 export const getItemTaskQueueUrl = process.env.getItemTaskQueueUrl;

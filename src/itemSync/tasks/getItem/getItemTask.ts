@@ -1,9 +1,9 @@
 import { WorkerTask, sendTask, getItemTaskQueueUrl } from "../task";
 import { sendPutItem } from "./sendPutItem";
-import { getApi } from "../../wordpress/api";
-import { ApiInformation } from "../../config/ApiInformation";
-import { getApiInformation } from "../../config/getApiInformation";
-import { Item, getItem } from "../../wordpress/item";
+import { getApi } from "../../../wordpress/api";
+import { ApiInformation } from "../../../config/ApiInformation";
+import { getApiInformation } from "../../../config/getApiInformation";
+import { Item, getItem } from "../../../wordpress/item";
 
 export interface GetItemTask extends WorkerTask {
   task: "GetItem";
