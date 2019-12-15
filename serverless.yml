@@ -1,0 +1,130 @@
+service:
+  name: sls-wp-acl
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 128
+  tracing:
+    lambda: true
+    apiGateway: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:*"
+        - "sns:*"
+        - "ssm:*"
+      Resource:
+        - Fn::Join:
+            - ":"
+            - - "arn:aws:ssm"
+              - Ref: AWS::Region
+              - Ref: AWS::AccountId
+              - "parameter/sls-wp-acl/*"
+        - Fn::GetAtt: [listPostsTaskQueue, Arn]
+        - Fn::GetAtt: [getPostTaskQueue, Arn]
+        - !Ref putPostTopic
+        - !Ref knownPostsTopic
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    configRoot: /sls-wp-acl
+    getPostTaskQueueUrl: !Ref getPostTaskQueue
+    listPostsTaskQueueUrl: !Ref listPostsTaskQueue
+    putPostTopic: !Ref putPostTopic
+    knownPostsTopic: !Ref knownPostsTopic
+
+functions:
+  resyncApi:
+    handler: handler.resyncApi
+    events:
+      - http:
+          path: /wp/{apiName}/resync
+          method: any
+
+  resyncScheduler:
+    handler: handler.resyncScheduler
+    events:
+      - schedule: rate(6 hours)
+
+  listPostsTask:
+    handler: handler.listPostsTask
+    reservedConcurrency: 1
+    events:
+      - sqs:
+          arn: { Fn::GetAtt: [listPostsTaskQueue, Arn] }
+          batchSize: 1
+
+  getPostTask:
+    handler: handler.getPostTask
+    reservedConcurrency: 1
+    events:
+      - sqs:
+          arn: { Fn::GetAtt: [getPostTaskQueue, Arn] }
+          batchSize: 1
+
+resources:
+  Resources:
+    listPostsTaskQueue:
+      Type: AWS::SQS::Queue
+    getPostTaskQueue:
+      Type: AWS::SQS::Queue
+
+    # Clients subscribe to these.
+    putPostTopic:
+      Type: AWS::SNS::Topic
+    deletePostTopic:
+      Type: AWS::SNS::Topic
+    knownPostsTopic:
+      Type: AWS::SNS::Topic
+
+    putPostTopicObserverQueue:
+      Type: AWS::SQS::Queue
+
+    putPostTopicObserverSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref putPostTopic
+        Endpoint:
+          Fn::GetAtt: [putPostTopicObserverQueue, Arn]
+        Protocol: sqs
+        RawMessageDelivery: "true"
+
+    httpSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref putPostTopic
+        Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
+        Protocol: https
+        RawMessageDelivery: "true"
+    httpSubscription2:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref knownPostsTopic
+        Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
+        Protocol: https
+        RawMessageDelivery: "true"
+
+  Outputs:
+    putPostTopic:
+      Description: "ARN for the putPost SNS topic"
+      Value: !Ref putPostTopic
+    deletePostTopic:
+      Description: "ARN for the deletePost SNS topic"
+      Value: !Ref deletePostTopic
+    knownPostsTopic:
+      Description: "ARN for the knownPosts SNS topic"
+      Value: !Ref knownPostsTopic
