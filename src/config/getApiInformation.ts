@@ -1,13 +1,7 @@
-import { AWS } from "../util";
-import { ApiInformation } from "../wordpress/api";
-
-const configRoot = process.env.configRoot;
+import { ApiInformation } from "./ApiInformation";
+import { configRoot, ssm } from "./ssm";
 
 export async function getApiInformation(name: string): Promise<ApiInformation> {
-  const ssm = new AWS.SSM({
-    region: process.env.AWS_REGION
-  });
-
   const param = await ssm
     .getParameter({
       Name: `${configRoot}/${name}`

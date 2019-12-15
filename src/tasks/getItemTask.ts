@@ -1,6 +1,7 @@
 import { WorkerTask, sendTask, getItemTaskQueueUrl } from "./task";
 import { sendPutItem } from "../notifications/sendPutItem";
-import { getApi, ApiInformation } from "../wordpress/api";
+import { getApi } from "../wordpress/api";
+import { ApiInformation } from "../config/ApiInformation";
 import { getApiInformation } from "../config/getApiInformation";
 import { Item, getItem } from "../wordpress/item";
 

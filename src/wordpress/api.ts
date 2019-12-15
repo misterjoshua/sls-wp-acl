@@ -1,9 +1,5 @@
 import WPAPI from "wpapi";
-
-export interface ApiInformation {
-  name: string;
-  endpoint: string;
-}
+import { ApiInformation } from "../config/ApiInformation";
 
 export function getApi(apiInfo: ApiInformation): WPAPI {
   return new WPAPI({
