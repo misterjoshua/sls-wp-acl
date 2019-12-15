@@ -4,23 +4,20 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install the serverless framework
-      run: yarn global add serverless
-    - uses: actions/checkout@v1
-    - name: Cache node modules
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: node_modules
-    - name: Get dependencies
-      run: yarn
-    - name: Run the linter
-      run: yarn run lint
-    - name: Run tests
-      run: yarn run test
-    - name: Create a serverless package
-      run: serverless package
+      - uses: actions/checkout@v1
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules
+      - name: Get dependencies
+        run: yarn
+      - name: Run the linter
+        run: yarn run lint
+      - name: Run tests
+        run: yarn run test
+      - name: Create a serverless package
+        run: yarn run sls:package
