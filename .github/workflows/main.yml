@@ -8,8 +8,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install the serverless framework
+      run: yarn global add serverless
     - uses: actions/checkout@v1
-    - run: yarn
-    - run: yarn run lint
-    - run: yarn run test
-    - run: serverless package
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: node_modules
+    - name: Get dependencies
+      run: yarn
+    - name: Run the linter
+      run: yarn run lint
+    - name: Run tests
+      run: yarn run test
+    - name: Create a serverless package
+      run: serverless package
