@@ -1,10 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
 import { sendListItemsCommandForAllApis } from "./handler";
 
-export const srcResyncAllApi: APIGatewayProxyHandler = async (
-  _,
-  _context
-): Promise<APIGatewayProxyResult> => {
+export const srcResyncAllApi: APIGatewayProxyHandler = async (): Promise<APIGatewayProxyResult> => {
   const apiInfos = await sendListItemsCommandForAllApis();
 
   return {

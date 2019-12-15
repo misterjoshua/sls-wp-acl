@@ -3,8 +3,7 @@ import { getApiInformation } from "../config/getApiInformation";
 import { sendListItemsCommandForTypes, wpTypes } from "./handler";
 
 export const srcResyncApi: APIGatewayProxyHandler = async (
-  event,
-  _context
+  event
 ): Promise<APIGatewayProxyResult> => {
   const apiName = event.pathParameters.apiName;
 
