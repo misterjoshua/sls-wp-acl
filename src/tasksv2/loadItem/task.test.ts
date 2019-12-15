@@ -29,12 +29,15 @@ it("should produce and send a task with the requested id", async () => {
 
 it("should send the correct item after loading it", async () => {
   let sentItem: MyItemType = undefined;
-  await consumeLoadItemTask<MyItemType, MyItemId>(
-    myItemGetter,
-    async (item: MyItemId): Promise<void> => {
+
+  const actions = {
+    getItem: myItemGetter,
+    sendItemLoaded: async (item: MyItemId): Promise<void> => {
       sentItem = item;
     }
-  )({
+  };
+
+  await consumeLoadItemTask<MyItemType, MyItemId>(actions)({
     type: "LoadItemTask",
     itemId: "foo"
   });
@@ -45,12 +48,14 @@ it("should send the correct item after loading it", async () => {
 
 it("should consume the correct item from the api", async () => {
   let loadedItem: MyItemType = undefined;
-  const consumer = consumeLoadItemTask<MyItemType, MyItemId>(
-    myItemGetter,
-    async item => {
+
+  const actions = {
+    getItem: myItemGetter,
+    sendItemLoaded: async item => {
       loadedItem = item;
     }
-  );
+  };
+  const consumer = consumeLoadItemTask<MyItemType, MyItemId>(actions);
 
   const producer = produceLoadItemTask<MyItemId>(
     async task => await consumer(task)

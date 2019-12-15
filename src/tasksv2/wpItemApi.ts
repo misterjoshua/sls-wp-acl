@@ -1,6 +1,11 @@
-import { ItemGetter } from "./loadItem/task";
+import {
+  ItemGetter,
+  produceLoadItemTask,
+  consumeLoadItemTask
+} from "./loadItem/task";
 import { Post } from "../wordpress/post";
 import WPAPI from "wpapi";
+import { sqsSender, snsPublisher } from "./tasks";
 
 export const wpMockPostGetter: ItemGetter<Post, number> = async (
   itemId: number
@@ -12,6 +17,34 @@ export const wpMockPostGetter: ItemGetter<Post, number> = async (
     }
   }[itemId];
 };
+
+interface WPItem {
+  id: number;
+}
+
+function wpLoadItemConfiguration<ItemType extends WPItem>(
+  api: WPAPI,
+  loadItemQueueUrl: string,
+  putItemTopicArn: string
+) {
+  const producer = produceLoadItemTask<number>(sqsSender(loadItemQueueUrl));
+
+  const getItem = async (itemId: number): Promise<ItemType> =>
+    api.pages().id(itemId);
+
+  const sendItem = snsPublisher<ItemType>(loadItemQueueUrl);
+  const consumer = consumeLoadItemTask<ItemType, number>({
+    getItem: getItem,
+    sendItemLoaded: sendItem
+  });
+
+  return {
+    producer,
+    consumer
+  };
+}
+
+const api: WPAPI;
 
 export const wpApiPageGetter = (api: WPAPI) => async (
   itemId: number

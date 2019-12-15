@@ -22,11 +22,15 @@ export const produceLoadItemTask = <ItemId>(
   await sendTask(task);
 };
 
+interface LoadItemConsumerActions<ItemType, ItemId> {
+  getItem: ItemGetter<ItemType, ItemId>;
+  sendItemLoaded: ItemLoadedSender<ItemType>;
+}
+
 // Run this task
 export const consumeLoadItemTask = <ItemType, ItemId>(
-  getItem: ItemGetter<ItemType, ItemId>,
-  sendItemLoaded: ItemLoadedSender<ItemType>
+  actions: LoadItemConsumerActions<ItemType, ItemId>
 ) => async (task: LoadItemTask<ItemId>) => {
-  const item = await getItem(task.itemId);
-  await sendItemLoaded(item);
+  const item = await actions.getItem(task.itemId);
+  await actions.sendItemLoaded(item);
 };
