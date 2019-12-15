@@ -1,12 +1,13 @@
 import { AWS } from "../util";
 import { ApiInformation } from "../wordpress/api";
 
-export const listPostsTaskQueueUrl = process.env.listPostsTaskQueueUrl;
-export const getPostTaskQueueUrl = process.env.getPostTaskQueueUrl;
+export const listItemsTaskQueueUrl = process.env.listItemsTaskQueueUrl;
+export const getItemTaskQueueUrl = process.env.getItemTaskQueueUrl;
 
 export interface WorkerTask {
   task: string;
   api: ApiInformation;
+  type: string;
 }
 
 export async function sendTask(

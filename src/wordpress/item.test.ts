@@ -1,17 +1,19 @@
-import { listPosts, getPost } from "./post";
 import { apiMock } from "./api.test";
+import { listItems, getItem } from "./item";
+
+const testItemType = "posts";
 
 it("Should access the api", async () => {
-  const posts = await listPosts(apiMock, 1);
+  const posts = await listItems(apiMock, testItemType, 1);
   expect(posts.length).toBeGreaterThan(0);
 });
 
 it("Should handle 'last page'", async () => {
-  const posts = await listPosts(apiMock, 10000);
+  const posts = await listItems(apiMock, testItemType, 10000);
   expect(posts).toHaveLength(0);
 });
 
 it("should get a known-to-exist post", async () => {
-  const post = await getPost(apiMock, 31216);
+  const post = await getItem(apiMock, testItemType, 31216);
   expect(post.id).toBe(31216);
 });

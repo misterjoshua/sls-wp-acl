@@ -33,19 +33,19 @@ provider:
               - Ref: AWS::Region
               - Ref: AWS::AccountId
               - "parameter/sls-wp-acl/*"
-        - Fn::GetAtt: [listPostsTaskQueue, Arn]
-        - Fn::GetAtt: [getPostTaskQueue, Arn]
-        - !Ref putPostTopic
-        - !Ref knownPostsTopic
+        - Fn::GetAtt: [listItemsTaskQueue, Arn]
+        - Fn::GetAtt: [getItemTaskQueue, Arn]
+        - !Ref putItemTopic
+        - !Ref knownItemsTopic
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     configRoot: /sls-wp-acl
-    getPostTaskQueueUrl: !Ref getPostTaskQueue
-    listPostsTaskQueueUrl: !Ref listPostsTaskQueue
-    putPostTopic: !Ref putPostTopic
-    knownPostsTopic: !Ref knownPostsTopic
+    getItemTaskQueueUrl: !Ref getItemTaskQueue
+    listItemsTaskQueueUrl: !Ref listItemsTaskQueue
+    putItemTopic: !Ref putItemTopic
+    knownItemsTopic: !Ref knownItemsTopic
 
 functions:
   resyncApi:
@@ -60,71 +60,71 @@ functions:
     events:
       - schedule: rate(6 hours)
 
-  listPostsTask:
-    handler: handler.listPostsTask
-    reservedConcurrency: 1
+  listItemsTask:
+    handler: handler.listItemsTask
+    reservedConcurrency: 5
     events:
       - sqs:
-          arn: { Fn::GetAtt: [listPostsTaskQueue, Arn] }
+          arn: { Fn::GetAtt: [listItemsTaskQueue, Arn] }
           batchSize: 1
 
-  getPostTask:
-    handler: handler.getPostTask
-    reservedConcurrency: 1
+  getItemTask:
+    handler: handler.getItemTask
+    reservedConcurrency: 5
     events:
       - sqs:
-          arn: { Fn::GetAtt: [getPostTaskQueue, Arn] }
+          arn: { Fn::GetAtt: [getItemTaskQueue, Arn] }
           batchSize: 1
 
 resources:
   Resources:
-    listPostsTaskQueue:
+    listItemsTaskQueue:
       Type: AWS::SQS::Queue
-    getPostTaskQueue:
+    getItemTaskQueue:
       Type: AWS::SQS::Queue
 
     # Clients subscribe to these.
-    putPostTopic:
+    putItemTopic:
       Type: AWS::SNS::Topic
-    deletePostTopic:
+    deleteItemTopic:
       Type: AWS::SNS::Topic
-    knownPostsTopic:
+    knownItemsTopic:
       Type: AWS::SNS::Topic
 
-    putPostTopicObserverQueue:
+    putItemTopicObserverQueue:
       Type: AWS::SQS::Queue
 
-    putPostTopicObserverSubscription:
+    putItemTopicObserverSubscription:
       Type: AWS::SNS::Subscription
       Properties:
-        TopicArn: !Ref putPostTopic
+        TopicArn: !Ref putItemTopic
         Endpoint:
-          Fn::GetAtt: [putPostTopicObserverQueue, Arn]
+          Fn::GetAtt: [putItemTopicObserverQueue, Arn]
         Protocol: sqs
-        RawMessageDelivery: "true"
+        RawMessageDelivery: "false"
 
     httpSubscription:
       Type: AWS::SNS::Subscription
       Properties:
-        TopicArn: !Ref putPostTopic
+        TopicArn: !Ref putItemTopic
         Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
         Protocol: https
-        RawMessageDelivery: "true"
+        RawMessageDelivery: "false"
     httpSubscription2:
       Type: AWS::SNS::Subscription
       Properties:
-        TopicArn: !Ref knownPostsTopic
+        TopicArn: !Ref knownItemsTopic
         Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
         Protocol: https
-        RawMessageDelivery: "true"
+        RawMessageDelivery: "false"
 
   Outputs:
-    putPostTopic:
-      Description: "ARN for the putPost SNS topic"
-      Value: !Ref putPostTopic
-    deletePostTopic:
-      Description: "ARN for the deletePost SNS topic"
-      Value: !Ref deletePostTopic
-    knownPostsTopic:
-      Description: "ARN for the knownPosts SNS topic"
-      Value: !Ref knownPostsTopic
+    putItemTopic:
+      Description: "ARN for the putItem SNS topic"
+      Value: !Ref putItemTopic
+    deleteItemTopic:
+      Description: "ARN for the deleteItem SNS topic"
+      Value: !Ref deleteItemTopic
+    knownItemsTopic:
+      Description: "ARN for the knownItems SNS topic"
+      Value: !Ref knownItemsTopic

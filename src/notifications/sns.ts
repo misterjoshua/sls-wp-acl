@@ -1,11 +1,9 @@
 import { AWS } from "../util";
 
-export const putPostTopic = process.env.putPostTopic;
-export const knownPostsTopic = process.env.knownPostsTopic;
-
 type NotificationMessage = object | string;
 export async function sendNotification(
   topic: string,
+  subject: string,
   message: NotificationMessage
 ): Promise<void> {
   const sns = new AWS.SNS({
@@ -17,6 +15,7 @@ export async function sendNotification(
   await sns
     .publish({
       TopicArn: topic,
+      Subject: subject,
       Message: JSON.stringify(message)
     })
     .promise();
