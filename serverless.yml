@@ -171,23 +171,6 @@ resources:
     knownItemsTopic:
       Type: AWS::SNS::Topic
 
-    # Webhook.site subscription to the sns topics.
-
-    httpSubscription:
-      Type: AWS::SNS::Subscription
-      Properties:
-        TopicArn: !Ref putItemTopic
-        Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
-        Protocol: https
-        RawMessageDelivery: "false"
-    httpSubscription2:
-      Type: AWS::SNS::Subscription
-      Properties:
-        TopicArn: !Ref knownItemsTopic
-        Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
-        Protocol: https
-        RawMessageDelivery: "false"
-
     # itemStore
     putItemStoreTaskQueue:
       Type: AWS::SQS::Queue
