@@ -43,6 +43,11 @@ provider:
         - Fn::GetAtt: [getItemTaskQueue, Arn]
         - !Ref putItemTopic
         - !Ref knownItemsTopic
+    - Effect: Allow
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - Fn::GetAtt: [itemStoreTable, Arn]
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
@@ -53,10 +58,11 @@ provider:
     putItemTopic: !Ref putItemTopic
     deleteItemTopic: !Ref deleteItemTopic
     knownItemsTopic: !Ref knownItemsTopic
+    itemStoreTable: !Ref itemStoreTable
 
 functions:
   ####
-  # Item Synchronization Component
+  # itemSync component
   ####
   resyncApi:
     handler: handler.resyncApi
@@ -111,6 +117,31 @@ functions:
           arn: { Fn::GetAtt: [getItemTaskQueue, Arn] }
           batchSize: 1
 
+  #####
+  # itemStore component
+  #####
+
+  putItemStoreTask:
+    handler: handler.putItemStoreTask
+    events:
+      - sqs:
+          arn: { Fn::GetAtt: [putItemStoreTaskQueue, Arn] }
+          batchSize: 1
+
+  deleteItemStoreTask:
+    handler: handler.deleteItemStoreTask
+    events:
+      - sqs:
+          arn: { Fn::GetAtt: [deleteItemStoreTaskQueue, Arn] }
+          batchSize: 1
+
+  knownItemsStoreTask:
+    handler: handler.knownItemsStoreTask
+    events:
+      - sqs:
+          arn: { Fn::GetAtt: [knownItemsStoreTaskQueue, Arn] }
+          batchSize: 1
+
 resources:
   Resources:
     listItemsTaskQueue:
@@ -140,17 +171,7 @@ resources:
     knownItemsTopic:
       Type: AWS::SNS::Topic
 
-    putItemTopicObserverQueue:
-      Type: AWS::SQS::Queue
-
-    putItemTopicObserverSubscription:
-      Type: AWS::SNS::Subscription
-      Properties:
-        TopicArn: !Ref putItemTopic
-        Endpoint:
-          Fn::GetAtt: [putItemTopicObserverQueue, Arn]
-        Protocol: sqs
-        RawMessageDelivery: "false"
+    # Webhook.site subscription to the sns topics.
 
     httpSubscription:
       Type: AWS::SNS::Subscription
@@ -166,6 +187,67 @@ resources:
         Endpoint: https://webhook.site/27c389c2-e5bd-4445-8806-3385f4ed1aa5
         Protocol: https
         RawMessageDelivery: "false"
+
+    # itemStore
+    putItemStoreTaskQueue:
+      Type: AWS::SQS::Queue
+    putItemStoreTaskQueueSubscriptionToPutItemTopic:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref putItemTopic
+        Endpoint:
+          Fn::GetAtt: [putItemStoreTaskQueue, Arn]
+        Protocol: sqs
+        RawMessageDelivery: "false"
+
+    deleteItemStoreTaskQueue:
+      Type: AWS::SQS::Queue
+    deleteItemStoreTaskQueueSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref deleteItemTopic
+        Endpoint:
+          Fn::GetAtt: [deleteItemStoreTaskQueue, Arn]
+        Protocol: sqs
+        RawMessageDelivery: "false"
+
+    knownItemsStoreTaskQueue:
+      Type: AWS::SQS::Queue
+    knownItemsStoreTaskQueueSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref knownItemsTopic
+        Endpoint:
+          Fn::GetAtt: [knownItemsStoreTaskQueue, Arn]
+        Protocol: sqs
+        RawMessageDelivery: "false"
+
+    storeTaskQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: allow-sns-messages
+              Effect: Allow
+              Principal: "*"
+              Action: sqs:*
+              Resource: "*"
+        Queues:
+          - !Ref deleteItemStoreTaskQueue
+          - !Ref knownItemsStoreTaskQueue
+          - !Ref putItemStoreTaskQueue
+
+    itemStoreTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: ApiTypeId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ApiTypeId
+            KeyType: HASH
 
   Outputs:
     putItemTopic:
