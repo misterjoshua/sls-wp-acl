@@ -8,7 +8,9 @@ cache:
 
 stages:
   - build
-  - deploy
+  - deploy_dev
+  - deploy_stage
+  - deploy_prod
 
 yarn:
   stage: .pre
@@ -17,12 +19,10 @@ yarn:
 lint:
   stage: build
   script: yarn run lint
-  allow_failure: false
 
 test:
   stage: build
   script: yarn run test
-  allow_failure: false
 
 package:
   stage: build
@@ -31,7 +31,6 @@ package:
   artifacts:
     paths:
       - .serverless/
-  allow_failure: false
 
 # Deployment stages.
 
@@ -42,20 +41,18 @@ package:
   retry: 0
 
 deploy_dev:
-  stage: deploy
+  stage: deploy_dev
   environment: { name: dev }
   <<: *deploy
 
 deploy_stage:
-  stage: deploy
+  stage: deploy_stage
   environment: { name: stage }
   when: manual
-  needs: [deploy_dev]
   <<: *deploy
 
 deploy_prod:
-  stage: deploy
+  stage: deploy_prod
   environment: { name: prod }
   when: manual
-  needs: [deploy_stage]
   <<: *deploy
