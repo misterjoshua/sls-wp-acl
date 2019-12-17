@@ -38,6 +38,8 @@ package:
   script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
   allow_failure: false
   only: [master]
+  dependencies:
+    - package
   retry: 0
 
 deploy_dev:
