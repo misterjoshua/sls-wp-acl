@@ -30,7 +30,7 @@ package:
     - yarn run sls:package
   artifacts:
     paths:
-      - .serverless/
+      - build/
 
 # Used in key merge.
 .deploy: &deploy
