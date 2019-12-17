@@ -1,4 +1,4 @@
-image: node:latest
+image: node:12
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
@@ -32,13 +32,13 @@ package:
     paths:
       - .serverless/
 
+# Deployment steps.
+
 dev:
   stage: dev
   script: yarn run sls:deploy:dev
-# stage:
-#   stage: dev
-#   script: serverless deploy --package ./.serverless --stage dev
 
-# prod:
-#   stage: dev
-#   script: serverless deploy --package ./.serverless --stage dev
+stage:
+  stage: stage
+  when: manual
+  script: yarn run sls:deploy:stage
