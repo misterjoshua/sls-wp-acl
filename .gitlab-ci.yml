@@ -33,6 +33,7 @@ package:
       - .serverless/
 
 # Deployment stages.
+# Extra comment.
 
 .deploy: &deploy
   script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
