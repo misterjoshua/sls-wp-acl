@@ -9,7 +9,8 @@
     "lint": "eslint --fix src/**/*.ts",
     "sls:package": "serverless package",
     "sls:deploy:dev": "serverless deploy --path .serverless --stage dev",
-    "sls:deploy:stage": "serverless deploy --path .serverless --stage stage"
+    "sls:deploy:stage": "serverless deploy --path .serverless --stage stage",
+    "sls:deploy:prod": "serverless deploy --path .serverless --stage prod"
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.35",
