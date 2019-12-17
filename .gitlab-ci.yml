@@ -12,13 +12,25 @@ stages:
   - stage
   - prod
 
-build:
+yarn:
+  stage: .pre
+  script: yarn
+
+lint:
+  stage: build
+  script: yarn run lint
+
+test:
+  stage: build
+  script: yarn run test
+
+package:
   stage: build
   script:
-    - yarn
-    - yarn run lint
-    - yarn run test
     - yarn run sls:package
+  artifacts:
+    paths:
+      - .serverless/
 
 dev:
   stage: dev
