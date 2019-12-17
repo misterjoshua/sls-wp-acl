@@ -34,16 +34,22 @@ package:
 
 # Deployment stages.
 
-dev:
+deploy_dev:
   stage: dev
-  script: yarn run sls:deploy:dev
+  script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
+  environment: { name: dev }
+  only: [master]
 
-stage:
+deploy_stage:
   stage: stage
   when: manual
-  script: yarn run sls:deploy:stage
+  script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
+  environment: { name: stage }
+  only: [master]
 
-prod:
+deploy_prod:
   stage: prod
   when: manual
-  script: yarn run sls:deploy:prod
+  script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
+  environment: { name: prod }
+  only: [master]
