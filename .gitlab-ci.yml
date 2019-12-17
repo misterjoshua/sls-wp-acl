@@ -32,8 +32,7 @@ package:
     paths:
       - .serverless/
 
-# Deployment stages.
-
+# Used in key merge.
 .deploy: &deploy
   script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
   allow_failure: false
@@ -42,6 +41,7 @@ package:
     - package
   retry: 0
 
+# Deployment stages.
 deploy_dev:
   stage: deploy_dev
   environment: { name: dev }
