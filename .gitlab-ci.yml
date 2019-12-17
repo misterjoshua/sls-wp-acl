@@ -46,6 +46,7 @@ deploy_stage:
   script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
   environment: { name: stage }
   only: [master]
+  dependencies: [deploy_dev]
 
 deploy_prod:
   stage: prod
@@ -53,3 +54,4 @@ deploy_prod:
   script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
   environment: { name: prod }
   only: [master]
+  dependencies: [deploy_stage]
