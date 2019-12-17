@@ -50,10 +50,12 @@ deploy_stage:
   stage: deploy
   environment: { name: stage }
   when: manual
+  needs: [deploy_dev]
   <<: *deploy
 
 deploy_prod:
   stage: deploy
   environment: { name: prod }
   when: manual
+  needs: [deploy_stage]
   <<: *deploy
