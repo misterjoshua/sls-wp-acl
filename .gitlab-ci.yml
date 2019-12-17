@@ -34,9 +34,7 @@ package:
 
 # Used in key merge.
 .deploy: &deploy
-  script:
-    - find . -type f
-    - yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
+  script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
   allow_failure: false
   only: [master]
   dependencies:
