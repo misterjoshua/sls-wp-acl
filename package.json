@@ -7,7 +7,8 @@
     "test": "jest",
     "prettier": "pretty-quick",
     "lint": "eslint --fix src/**/*.ts",
-    "sls:package": "serverless package"
+    "sls:package": "serverless package",
+    "sls:deploy:dev": "serverless deploy --path .serverless --stage dev"
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.35",
