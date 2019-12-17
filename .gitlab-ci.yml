@@ -19,10 +19,12 @@ yarn:
 lint:
   stage: build
   script: yarn run lint
+  allow_failure: false
 
 test:
   stage: build
   script: yarn run test
+  allow_failure: false
 
 package:
   stage: build
@@ -31,6 +33,7 @@ package:
   artifacts:
     paths:
       - .serverless/
+  allow_failure: false
 
 # Deployment stages.
 
