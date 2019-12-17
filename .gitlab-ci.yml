@@ -8,9 +8,7 @@ cache:
 
 stages:
   - build
-  - dev
-  - stage
-  - prod
+  - deploy
 
 yarn:
   stage: .pre
@@ -37,24 +35,25 @@ package:
 
 # Deployment stages.
 
-deploy_dev:
-  stage: dev
+.deploy: &deploy
   script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
-  environment: { name: dev }
   allow_failure: false
   only: [master]
+  retry: 0
+
+deploy_dev:
+  stage: deploy
+  environment: { name: dev }
+  <<: *deploy
 
 deploy_stage:
-  stage: stage
-  when: manual
-  script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
+  stage: deploy
   environment: { name: stage }
-  allow_failure: false
-  only: [master]
+  when: manual
+  <<: *deploy
 
 deploy_prod:
-  stage: prod
-  when: manual
-  script: yarn run sls:deploy:$CI_ENVIRONMENT_SLUG
+  stage: deploy
   environment: { name: prod }
-  only: [master]
+  when: manual
+  <<: *deploy
