@@ -7,10 +7,10 @@
     "test": "jest",
     "prettier": "pretty-quick",
     "lint": "eslint --fix src/**/*.ts",
-    "sls:package": "serverless package",
-    "sls:deploy:dev": "serverless deploy --package .serverless/ --stage dev",
-    "sls:deploy:stage": "serverless deploy --package .serverless/ --stage stage",
-    "sls:deploy:prod": "serverless deploy --package .serverless/ --stage prod"
+    "sls:package": "serverless package --package ./build",
+    "sls:deploy:dev": "serverless deploy --package ./build --stage dev",
+    "sls:deploy:stage": "serverless deploy --package ./build --stage stage",
+    "sls:deploy:prod": "serverless deploy --package ./build --stage prod"
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.35",
